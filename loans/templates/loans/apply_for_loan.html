@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="min-h-screen flex flex-col items-center justify-center bg-gray-100 p-4">
+    <!-- Apply for Loan Button -->
+    <a href="{% url 'apply_for_loan' %}" 
+       class="mb-6 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg shadow-md transition-all">
+        Apply for Loan
+    </a>
+
+    <!-- Form Card -->
+    <div class="bg-white p-8 rounded-lg shadow-lg max-w-md w-full">
+        <h2 class="text-2xl font-bold text-gray-800 text-center mb-6">Loan Application</h2>
+        
+        <form method="POST" class="space-y-4">
+            {% csrf_token %}
+
+            <!-- Render Form Fields -->
+            <div class="space-y-2">
+                {{ form.as_p }}
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" 
+                class="w-full bg-green-500 hover:bg-green-600 text-white font-semibold py-3 rounded-lg shadow-md transition-all">
+                Submit Application
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}

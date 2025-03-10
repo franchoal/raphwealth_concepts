@@ -1,0 +1,95 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Raphwealth{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#1E40AF",
+                        secondary: "#2563EB",
+                    },
+                },
+            },
+        };
+    </script>
+</head>
+<body class="bg-gray-100">
+
+    <!-- Hero Header with Background Image -->
+    <header class="relative bg-cover bg-center h-64 text-white bg-blue-700" style="background-image: url('{% static "images/background.jpg" %}');">
+        <div class="absolute inset-0 bg-black bg-opacity-50"></div> <!-- Dark overlay -->
+        <div class="container mx-auto flex flex-col items-center justify-center h-full relative z-10">
+            <h1 class="text-4xl font-extrabold tracking-wide text-white drop-shadow-lg">Raphwealth Concepts</h1>
+            <p class="mt-2 text-lg text-gray-200">Your Trusted Micro-Lending Partner</p>
+        </div>
+    </header>
+
+    <!-- Navigation Bar -->
+    <nav class="bg-blue-600 shadow-md">
+        <div class="container mx-auto flex items-center justify-center py-3 px-6">
+            <!-- Logo -->
+            <div class="mr-8">
+                <img src="{% static 'images/raphwealth_logo.png' %}" alt="Raphwealth Concepts Logo" class="h-10">
+            </div>
+
+            <!-- Menu Links -->
+            <ul class="flex space-x-4">
+                <li>
+                    <a href="{% url 'home' %}" 
+                       class="px-4 py-2 border border-white bg-blue-700 text-white font-semibold rounded-lg hover:bg-blue-500 hover:border-gray-300 transition">
+                        Home
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'loan_calculator' %}" 
+                       class="px-4 py-2 border border-white bg-blue-700 text-white font-semibold rounded-lg hover:bg-blue-500 hover:border-gray-300 transition">
+                        Loan Calculator
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'apply_for_loan' %}" 
+                       class="px-4 py-2 border border-white bg-blue-700 text-white font-semibold rounded-lg hover:bg-blue-500 hover:border-gray-300 transition">
+                        Apply for Loan
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- ✅ Display Django Messages -->
+    {% if messages %}
+    <div class="container mx-auto mt-4">
+        {% for message in messages %}
+        <div class="px-4 py-3 rounded-lg shadow-md text-white {{ message.tags }} relative">
+            <span class="block">{{ message }}</span>
+            <button class="absolute top-2 right-4 text-white hover:text-gray-300" onclick="this.parentElement.style.display='none'">✖</button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Main Content -->
+    <main class="container mx-auto p-6">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white text-center py-4 mt-10">
+        <p>© 2025 Raphwealth Concepts | Empowering Your Financial Goals</p>
+    </footer>
+
+    <!-- JavaScript to auto-dismiss messages after 5 seconds -->
+    <script>
+        setTimeout(function() {
+            document.querySelectorAll('.message').forEach(msg => msg.style.display = 'none');
+        }, 5000);
+    </script>
+
+</body>
+</html>
