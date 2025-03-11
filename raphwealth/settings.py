@@ -2,23 +2,25 @@ from pathlib import Path
 import os
 import logging
 import environ
-
-# Initialize environment variables
-env = environ.Env()
-environ.Env.read_env()
+import dj_database_url
 
 # Build paths
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Initialize environment variables
+env = environ.Env()
+env.read_env(os.path.join(BASE_DIR, ".env"))  # Read .env file
 
 # Security: Use Environment Variables
 SECRET_KEY = env.str('SECRET_KEY', default='your-secret-key')  # Replace in .env
 DEBUG = env.bool('DEBUG', default=False)  # False in production
 
 # Allowed Hosts: Add your Render domain when deployed
-ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['localhost', '127.0.0.1'])
+ALLOWED_HOSTS = env("ALLOWED_HOSTS", default="localhost,127.0.0.1").split(",")
 
 # CSRF Trusted Origins (Important for Render Deployment)
 CSRF_TRUSTED_ORIGINS = [f"https://{host}" for host in ALLOWED_HOSTS if not host.startswith("127.")]
+CSRF_TRUSTED_ORIGINS.append("http://127.0.0.1")  # Ensure local development works
 
 # Installed Applications
 INSTALLED_APPS = [
@@ -66,24 +68,22 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'raphwealth.wsgi.application'
 
-# Database Configuration (Use PostgreSQL in production)
-USE_POSTGRES = env.bool('USE_POSTGRES', default=False)
-if USE_POSTGRES:
+# Database Configuration (Prefer DATABASE_URL if available)
+DATABASE_URL = env('DATABASE_URL', default=None)
+
+if DATABASE_URL:
     DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': env('DB_NAME'),
-            'USER': env('DB_USER'),
-            'PASSWORD': env('DB_PASSWORD'),
-            'HOST': env('DB_HOST', default='localhost'),
-            'PORT': env('DB_PORT', default='5432'),
-        }
-    }
+    'default': dj_database_url.config(default=os.getenv('DATABASE_URL'))
+}
 else:
     DATABASES = {
         'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': env('DB_NAME', default=''),
+            'USER': env('DB_USER', default=''),
+            'PASSWORD': env('DB_PASSWORD', default=''),
+            'HOST': env('DB_HOST', default='localhost'),
+            'PORT': env('DB_PORT', default='5432'),
         }
     }
 
